@@ -1,19 +1,6 @@
 <?php
 include 'dbconnect.php';
 
-// Fungsi untuk mengubah bulan menjadi bahasa Indonesia
-function formatTanggalIndonesia($date) {
-    $bulan = [
-        1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    ];
-
-    $pecahkan = explode('-', $date);
-    // Format menjadi Tanggal Bulan Tahun
-    return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
-}
-
-
 function get_output_qc_endline_yesterday($tgl){
     global $conn_produksi;
 
@@ -75,7 +62,7 @@ $yesterday = fetch_assoc_all(get_output_qc_endline_yesterday($tgl));
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>SEWING MONITORING</title>
@@ -177,7 +164,7 @@ $yesterday = fetch_assoc_all(get_output_qc_endline_yesterday($tgl));
             <!-- Image Slider -->
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md-8">
                         <div class="card shadow mb-4">
                             <div class="card-body">
                                 <div class="row">
@@ -191,31 +178,30 @@ $yesterday = fetch_assoc_all(get_output_qc_endline_yesterday($tgl));
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <h2><i class="fas fa-bullhorn"></i> SEWING & PACKING OUTPUT</h2>
-                            <br>
-                            <table id="outputTable" class="table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <center>NO</center>
-                                        </th>
-                                        <th>
-                                            <center>Line</center>
-                                        </th>
-                                        <th>
-                                            <center>Sewing Yesterday</center>
-                                        </th>
-                                        <th>
-                                            <center>Sewing Today</center>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
+                    <div class="col-md-4">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <h2><i class="fas fa-bullhorn"></i> SEWING & PACKING OUTPUT</h2>
+                                <br>
+                                <table id="outputTable" class="table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <center>NO</center>
+                                            </th>
+                                            <th>
+                                                <center>Line</center>
+                                            </th>
+                                            <th>
+                                                <center>Sewing Yesterday</center>
+                                            </th>
+                                            <th>
+                                                <center>Sewing Today</center>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
 $no = 1;
 $lines = [];
 
@@ -241,27 +227,33 @@ foreach(array_keys($lines) as $line){
         }
     }
 ?>
-                                    
-                                    <tr>
-                                        <td ><center><?= $no++ ?></center></td>
-                                        <td><center><?= $line ?></center></td>
-                                        <td>
-                                            <center><?= $y_qty ?></center>
-                                        </td>
-                                        <td>
-                                            <center><?= $today_qty ?></center>
-                                        </td>
-                                    </tr>
-                                    <?php } ?>
-                                </tbody>
 
-                            </table>
+                                        <tr>
+                                            <td>
+                                                <center><?= $no++ ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= $line ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= $y_qty ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= $today_qty ?></center>
+                                            </td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </section>
-        
+
     </main>
 
     <footer class="main-footer">
@@ -305,69 +297,77 @@ foreach($allLines as $l){
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-    $('#outputTable').DataTable({
-        responsive: true,
-        pageLength: 10,
-        lengthMenu: [10, 25, 50, 100],
-        order: [[1, 'asc']], // sort berdasarkan line
-        columnDefs: [
-            { className: "text-center", targets: "_all" }
-        ],
-        language: {
-            search: "Cari:",
-            lengthMenu: "Tampilkan _MENU_ data",
-            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-            paginate: {
-                first: "Awal",
-                last: "Akhir",
-                next: "→",
-                previous: "←"
-            },
-            zeroRecords: "Tidak ada data ditemukan"
-        }
+    $(document).ready(function() {
+        $('#outputTable').DataTable({
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+            order: [
+                [1, 'asc']
+            ], // sort berdasarkan line
+            columnDefs: [{
+                className: "text-center",
+                targets: "_all"
+            }],
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                paginate: {
+                    first: "Awal",
+                    last: "Akhir",
+                    next: "→",
+                    previous: "←"
+                },
+                zeroRecords: "Tidak ada data ditemukan"
+            }
+        });
     });
-});
-   const lines = <?= json_encode($chart_lines) ?>;
-const todayData = <?= json_encode($chart_today) ?>;
-const yesterdayData = <?= json_encode($chart_yesterday) ?>;
+    const lines = <?= json_encode($chart_lines) ?>;
+    const todayData = <?= json_encode($chart_today) ?>;
+    const yesterdayData = <?= json_encode($chart_yesterday) ?>;
 
-var options = {
-    chart: {
-        type: 'bar',
-        height: 350
-    },
-    series: [
-        {
-            name: 'Yesterday',
-            data: yesterdayData
+    var options = {
+        chart: {
+            type: 'bar',
+            height: 560
         },
-        {
-            name: 'Today',
-            data: todayData
+        series: [{
+                name: 'Yesterday',
+                data: yesterdayData
+            },
+            {
+                name: 'Today',
+                data: todayData
+            }
+        ],
+        xaxis: {
+            categories: lines,
+            title: {
+                text: 'Line'
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Output Qty'
+            }
+        },
+        colors: ['#ff0000', '#008FFB'],
+        plotOptions: {
+            bar: {
+                horizontal: false
+            }
         }
-    ],
-    xaxis: {
-        categories: lines,
-        title: { text: 'Line' }
-    },
-    yaxis: {
-        title: { text: 'Output Qty' }
-    },
-    colors: ['#ff0000', '#008FFB'],
-    plotOptions: {
-        bar: { horizontal: false }
-    }
-};
+    };
 
-var chart = new ApexCharts(document.querySelector("#todayChart"), options);
-chart.render();
+    var chart = new ApexCharts(document.querySelector("#todayChart"), options);
+    chart.render();
 
     // Fungsi untuk memperbarui waktu secara dinamis
     function updateTime() {
@@ -411,40 +411,6 @@ chart.render();
         currentIndex = (currentIndex + 1) % totalImages;
         images[currentIndex].classList.add('active');
     }
-
-    setInterval(showNextImage, 3000); // Ganti gambar setiap 3 detik
-
-    // Fungsi untuk memuat status video terbaru
-    function loadVideoStatus() {
-        fetch('admin/video_status.json')
-            .then(response => response.json())
-            .then(videoStatus => {
-                let videoNameToDisplay = '';
-                if (videoStatus['2.mp4'] === 'Active') {
-                    videoNameToDisplay = '2.mp4';
-                } else if (videoStatus['1.mp4'] === 'Active') {
-                    videoNameToDisplay = '1.mp4';
-                }
-
-                const videoElement = document.getElementById('video');
-                if (videoElement && videoElement.src.includes(videoNameToDisplay)) {
-                    return; // Video sudah aktif
-                }
-
-                // Update video
-                if (videoNameToDisplay) {
-                    videoElement.src = 'assets/video/' + videoNameToDisplay;
-                    videoElement.play(); // Play video baru
-                } else {
-                    videoElement.pause(); // Stop video jika tidak ada yang aktif
-                    videoElement.src = ''; // Kosongkan sumber video
-                }
-            })
-            .catch(error => console.error('Error fetching video status:', error));
-    }
-
-    // Cek status video setiap 3 detik
-    setInterval(loadVideoStatus, 3000);
     </script>
 </body>
 
