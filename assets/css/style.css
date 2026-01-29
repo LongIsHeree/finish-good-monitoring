@@ -1,0 +1,237 @@
+/* Gaya untuk tabel striping */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2; /* Warna latar belakang untuk baris ganjil */
+}
+
+/* Gaya untuk efek hover pada baris tabel */
+.table-hover tbody tr:hover {
+    background-color: #e6e6e6; /* Warna latar belakang saat hover */
+}
+
+/* Gaya tabel dasar */
+table {
+    width: 80%;
+    border-collapse: collapse;
+    border: 1px solid #ffffff;
+}
+
+/* Gaya sel tabel */
+th, td {
+    padding: 60px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Gaya untuk header tabel */
+th {
+    background-color: #ffffff; /* Warna merah untuk header tabel */
+    color: #ffffff; /* Warna teks header tabel */
+}
+
+/* Tambahan CSS untuk Image Slider */
+.image-slider {
+    position: relative;
+    width: 100%;
+    max-width: 800px; /* Adjust as needed */
+    overflow: hidden;
+    margin-top: 0; /* Jarak antara slider dan konten atas */
+}
+
+.image-slider img {
+    width: 200%;
+    height: 10px; /* Kurangi tinggi slider gambar */
+    object-fit: cover; /* Menjaga proporsi gambar agar sesuai dengan kontainer */
+    display: none; /* Hide all images by default */
+}
+
+.image-slider img.active {
+    display: block; /* Show the active image */
+}
+
+/* Reset margin dan padding untuk elemen-elemen dasar */
+body, h1, h2, h3, p, table {
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    margin-top: 2px; /* Tambahkan margin atas untuk jarak */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #222831;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    margin-right: 0em;
+}
+
+footer {
+    display: flex;
+    width: 100%;
+    position: relative;
+    background-color: #222831;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    height: 70px;
+}
+
+.date-time-container {
+    background-color: red;
+    color: white;
+    width: 15%;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.marquee-section {
+    width: 85%;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    background-color: #222831;
+}
+
+.marquee-text {
+    position: absolute;
+    white-space: nowrap;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    animation: marquee 20s linear infinite;
+    padding-left: 50%;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+main {
+    flex: 1;
+    padding: 1em;
+    margin-top: 0px; /* Memberikan jarak antara konten utama dan header */
+}
+s
+section {
+    margin-bottom: 2em;
+}
+
+h2 {
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 0.5em;
+    text-align: left;
+}
+
+th {
+    background-color: #ff0000; /* Warna merah */
+    color: white; /* Teks putih */
+    padding: 0.5em; /* Penambahan padding jika diperlukan */
+}
+
+.container {
+    display: flex;
+    gap: 1.5em; /* Menambahkan jarak antar elemen */
+}
+
+.schedule {
+    flex: 1; /* Membiarkan elemen ini mengambil 1 bagian dari ruang yang tersedia */
+    min-width: 300px; /* Menambahkan lebar minimum */
+    font-size: 16px;
+    max-width: 60%; /* Menetapkan lebar maksimum untuk membatasi ukuran elemen */
+}
+
+.gallery {
+    flex: 2; /* Membiarkan elemen ini mengambil 2 bagian dari ruang yang tersedia */
+    min-width: 300px; /* Menambahkan lebar minimum */
+    max-width: 30%; /* Menetapkan lebar maksimum untuk membatasi ukuran elemen */
+}
+
+.gallery video {
+    width: 130%;
+    height: auto; /* Biarkan tinggi otomatis mengikuti rasio aspek video */
+
+}
+
+/* Tambahan CSS untuk gambar di bawah video */
+.gallery img {
+    width: 100%; /* Lebar gambar sama dengan lebar galeri video */
+    height: 100px; /* Tinggi gambar menyesuaikan proporsi asli */
+    margin-top: none; /* Jarak antara video dan gambar */
+    display: block;
+}
+
+/* Media Queries untuk perangkat dengan lebar maksimum 768px */
+@media (max-width: 768px) {
+    .logo img {
+        height: 50px; /* Mengurangi ukuran logo untuk layar kecil */
+    }
+
+    .container {
+        flex-direction: column; /* Mengatur arah fleksibel untuk tampilan kolom */
+    }
+
+    .schedule, .gallery {
+        width: 150%; /* Mengatur lebar penuh untuk elemen */
+        margin-right: 0; /* Menghapus margin kanan untuk tampilan kolom */
+    }
+
+    footer {
+        flex-direction: column; /* Mengatur arah fleksibel footer untuk tampilan kolom */
+        font-size: 16px; /* Mengurangi ukuran font pada footer untuk layar kecil */
+        height: auto; /* Mengatur tinggi otomatis untuk footer */
+    }
+
+    .date-time-container, .marquee-section {
+        width: 100%; /* Mengatur lebar penuh untuk elemen footer */
+    }
+
+    .marquee-text {
+        font-size: 16px; /* Mengurangi ukuran font marquee untuk layar kecil */
+    }
+
+    /* Gaya untuk tabel striping */
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f2f2f2; /* Warna latar belakang untuk baris ganjil */
+    }
+}
+
+

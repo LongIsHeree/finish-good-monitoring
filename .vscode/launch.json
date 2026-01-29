@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="input-numbers" placeholder="Enter numbers separated by space">
+    <button onclick="generateResult()">Generate Result</button>
+    <p id="result"></p>
+
+    <script>
+        function generateResult() {
+            // Menghasilkan 4 angka acak antara 0 dan 99
+            const randomNumbers = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
+            document.getElementById('result').textContent = `Random Numbers: ${randomNumbers.join(', ')}`;
+        }
+    </script>
+</body>
+</html>
