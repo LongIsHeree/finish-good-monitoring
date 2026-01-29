@@ -12,27 +12,56 @@ function formatTanggalIndonesia($date) {
     // Format menjadi Tanggal Bulan Tahun
     return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 }
-$tgl = date('Y-m-d');
+
+
 function get_output_qc_endline_yesterday($tgl){
-  global $conn_produksi;
-  $date = date_create($tgl);
-  date_sub($date, date_interval_create_from_date_string("1 day"));
-  $strDate = date_format($date, "Y-m-d");
+    global $conn_produksi;
 
-  $query = "SELECT SUM(qty) AS Output_Yesterday, 'line' FROM `transaksi_qc_endline` WHERE tanggal='$strDate' GROUP BY line ORDER BY line";
-  $rst = mysqli_query($conn_produksi, $query);
-  return $rst;  
+    $date = new DateTime($tgl);
+    $date->modify('-1 day');
+    $yesterday = $date->format('Y-m-d');
+
+    $query = "SELECT 
+                line, 
+                SUM(qty) AS Output_Yesterday
+              FROM transaksi_qc_endline
+              WHERE tanggal = '$yesterday'
+              GROUP BY line
+              ORDER BY line";
+    return mysqli_query($conn_produksi, $query);
 }
+
 function get_output_qc_endline($tgl){
-  global $conn_produksi;
+      global $conn_produksi;
 
-  $query = "SELECT SUM(qty) AS Output_Today, 'line' 
-            FROM view_transaksi_qc_endline WHERE tanggal='$tgl'  AND status='open' ORDER BY jam";
+    $query = "SELECT 
+                line, 
+                SUM(qty) AS Output_Today
+              FROM transaksi_qc_endline
+              WHERE tanggal = '$tgl'
+              GROUP BY line
+              ORDER BY line";
 
-  $rst = mysqli_query($conn_produksi, $query);
-  return $rst;
-
+    return mysqli_query($conn_produksi, $query);
 }
+
+function fetch_assoc_all($result){
+    $rows = [];
+    while($r = mysqli_fetch_assoc($result)){
+        $rows[] = $r;
+    }
+    return $rows;
+}
+$tgl = '2026-01-23';
+// echo "DB: ";
+// echo mysqli_fetch_row(mysqli_query($conn_produksi,"SELECT DATABASE()"))[0];
+// die();
+
+// echo $tgl;
+// die();
+$today = fetch_assoc_all(get_output_qc_endline($tgl));
+$yesterday = fetch_assoc_all(get_output_qc_endline_yesterday($tgl));
+
 
 ?>
 
@@ -45,6 +74,8 @@ function get_output_qc_endline($tgl){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>SEWING MONITORING</title>
@@ -151,11 +182,9 @@ function get_output_qc_endline($tgl){
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <h3><center><strong>Output Yesterday</strong></center></h3>
-                                        <div id="shipmentChart"></div>
-                                    </div>
-                                    <div class="col">
-                                        <h3><center><strong>Output Today </strong></center></h3>
+                                        <h3>
+                                            <center><strong>Output Today </strong></center>
+                                        </h3>
                                         <div id="todayChart"></div>
                                     </div>
                                 </div>
@@ -163,56 +192,76 @@ function get_output_qc_endline($tgl){
                         </div>
                     </div>
                 </div>
-                 <div class="row">
-                        <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <h2><i class="fas fa-bullhorn"></i> SEWING & PACKING OUTPUT</h2>
-                                <br>
-                                <table class="table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <center>NO</center>
-                                            </th>
-                                            <th>
-                                                <center>Line</center>
-                                            </th>
-                                            <th>
-                                                <center>Sewing Yesterday</center>
-                                            </th>
-                                            <th>
-                                                <center>Sewing Today</center>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php if (!empty($data)): ?>
-                                        <?php foreach ($data as $row): ?>
-                                        <tr>
-                                            <td><?php echo $row['nama_pelatihan']; ?></td>
-                                            <td><?php echo $row['kerjasama']; ?></td>
-                                            <td>
-                                                <center><?php echo $row['tempat']; ?></center>
-                                            </td>
-                                            <td><?php echo $row['tgl_pelaksanaan']; ?></td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                        <?php else: ?>
-                                        <tr>
-                                            <td colspan="8">
-                                                <center>Belum ada data Barang</center>
-                                            </td>
-                                        </tr>
-                                        <?php endif; ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                <div class="row">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <h2><i class="fas fa-bullhorn"></i> SEWING & PACKING OUTPUT</h2>
+                            <br>
+                            <table id="outputTable" class="table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <center>NO</center>
+                                        </th>
+                                        <th>
+                                            <center>Line</center>
+                                        </th>
+                                        <th>
+                                            <center>Sewing Yesterday</center>
+                                        </th>
+                                        <th>
+                                            <center>Sewing Today</center>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+$no = 1;
+$lines = [];
+
+// Gabungkan semua line unik
+foreach($today as $t) $lines[$t['line']] = true;
+foreach($yesterday as $y) $lines[$y['line']] = true;
+
+foreach(array_keys($lines) as $line){
+
+    $today_qty = 0;
+    foreach($today as $t){
+        if($t['line'] == $line){
+            $today_qty = $t['Output_Today'];
+            break;
+        }
+    }
+
+    $y_qty = 0;
+    foreach($yesterday as $y){
+        if($y['line'] == $line){
+            $y_qty = $y['Output_Yesterday'];
+            break;
+        }
+    }
+?>
+                                    
+                                    <tr>
+                                        <td ><center><?= $no++ ?></center></td>
+                                        <td><center><?= $line ?></center></td>
+                                        <td>
+                                            <center><?= $y_qty ?></center>
+                                        </td>
+                                        <td>
+                                            <center><?= $today_qty ?></center>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+
+                            </table>
                         </div>
                     </div>
+                </div>
             </div>
-
-
         </section>
+        
     </main>
 
     <footer class="main-footer">
@@ -231,48 +280,94 @@ function get_output_qc_endline($tgl){
         </div>
 
     </footer>
+
+    <?php
+$chart_lines = [];
+$chart_today = [];
+$chart_yesterday = [];
+
+$mapToday = [];
+foreach($today as $t) $mapToday[$t['line']] = (int)$t['Output_Today'];
+
+$mapYesterday = [];
+foreach($yesterday as $y) $mapYesterday[$y['line']] = (int)$y['Output_Yesterday'];
+
+$allLines = array_unique(array_merge(array_keys($mapToday), array_keys($mapYesterday)));
+sort($allLines);
+
+foreach($allLines as $l){
+    $chart_lines[] = $l;
+    $chart_today[] = $mapToday[$l] ?? 0;
+    $chart_yesterday[] = $mapYesterday[$l] ?? 0;
+}
+?>
+
+
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
     <script>
-    fetch("get_shipment_chart.php")
-        .then(res => res.json())
-        .then(data => {
+        $(document).ready(function () {
+    $('#outputTable').DataTable({
+        responsive: true,
+        pageLength: 10,
+        lengthMenu: [10, 25, 50, 100],
+        order: [[1, 'asc']], // sort berdasarkan line
+        columnDefs: [
+            { className: "text-center", targets: "_all" }
+        ],
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            paginate: {
+                first: "Awal",
+                last: "Akhir",
+                next: "→",
+                previous: "←"
+            },
+            zeroRecords: "Tidak ada data ditemukan"
+        }
+    });
+});
+   const lines = <?= json_encode($chart_lines) ?>;
+const todayData = <?= json_encode($chart_today) ?>;
+const yesterdayData = <?= json_encode($chart_yesterday) ?>;
 
-            var options = {
-                chart: {
-                    type: 'bar',
-                    height: 300,
-                    width: 700
-                },
-                series: [{
-                    name: 'Total Carton',
-                    data: data.stok
-                }],
-                xaxis: {
-                    title: {
-                        text: 'Shipment Date'
-                    },
-                    categories: data.tgl
-                },
-                yaxis: {
-                    title: {
-                        text: 'Total Carton'
-                    },
-                },
-                plotOptions: {
-                    bar: {
-                        distributed: true
-                    }
-                },
-                colors: [
-                    '#008FFB',
-                    '#00E396',
-                ],
-            };
+var options = {
+    chart: {
+        type: 'bar',
+        height: 350
+    },
+    series: [
+        {
+            name: 'Yesterday',
+            data: yesterdayData
+        },
+        {
+            name: 'Today',
+            data: todayData
+        }
+    ],
+    xaxis: {
+        categories: lines,
+        title: { text: 'Line' }
+    },
+    yaxis: {
+        title: { text: 'Output Qty' }
+    },
+    colors: ['#ff0000', '#008FFB'],
+    plotOptions: {
+        bar: { horizontal: false }
+    }
+};
 
-            var chart = new ApexCharts(document.querySelector("#shipmentChart"), options);
-            chart.render();
-        });
+var chart = new ApexCharts(document.querySelector("#todayChart"), options);
+chart.render();
 
     // Fungsi untuk memperbarui waktu secara dinamis
     function updateTime() {

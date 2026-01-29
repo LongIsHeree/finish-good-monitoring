@@ -54,7 +54,7 @@ foreach ($videoNames as $videoName) {
     <link rel="icon" type="image/ico" href="favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/style.css">
-  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>DISFO | FINNISH GOOD</title>
      <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -149,10 +149,13 @@ foreach ($videoNames as $videoName) {
     <main>
         <section>
             <!-- Image Slider -->
-            --<div class="container">
-                <div class="schedule">
-                    <h2><i class="fas fa-bullhorn"></i> INFORMASI AREA FINISH GOOD</h2>
-                    <br>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+<h2><i class="fas fa-bullhorn"></i> INFORMASI AREA FINISH GOOD</h2>
+                    
                     <table class="table-striped table-hover">
                         <thead>
                             <tr>
@@ -168,9 +171,6 @@ foreach ($videoNames as $videoName) {
                                 <th>
                                     <center>Date Shipment</center>
                                 </th>
-
-
-
                             </tr>
                         </thead>
                         <tbody>
@@ -194,15 +194,20 @@ foreach ($videoNames as $videoName) {
                             <?php endif; ?>
                         </tbody>
                     </table>
-                </div>
-                <div class="gallery">
-                    
-                    <?php if ($videoNameToDisplay): ?>
-                    <div class="video-container" style="position: relative; display: inline-block;">
+                            </div>
+                        </div>
+                    </div>
+                  <div class="col-md-5">
+                    <div class="row">
+<div class="card shadow mb-4 text-center">
+                    <div class="card-body">
+                        <div class="gallery">
+ <?php if ($videoNameToDisplay): ?>
+                    <div class="video-container" style="position: relative; display: inline-block; width: 150%; height: 100px;">
                         <video id="video" src='assets/video/<?php echo htmlspecialchars($videoNameToDisplay); ?>'
                             autoplay loop muted></video>
                         <button id="unmuteButton"
-                            style="position: absolute; bottom: 10px; right: 10px; background: none; border: none; cursor: pointer;">
+                            style="position: inherit; bottom: 30px; right: 30px; background: none; border: none; cursor: pointer;">
                             <i class="fas fa-volume-up" style="font-size: 20px;" id="volumeIcon"></i>
                         </button>
                     </div>
@@ -224,14 +229,22 @@ foreach ($videoNames as $videoName) {
                     <?php else: ?>
                     <p>Video Tidak Aktif</p>
                     <?php endif; ?>
+                     </div>
+                    </div>
+                    </div>
+                    </div>
+                   <div class="row">
+                    
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <h3><strong>Shipment </strong></h3>
                             <div id="shipmentChart"></div>
                         </div>
                     </div>
+                    </div>
                 </div>
-            </div>
+                </div>
+                </div>
         </section>
     </main>
 
@@ -260,7 +273,7 @@ fetch("get_shipment_chart.php")
 .then(data => {
 
     var options = {
-        chart: { type: 'bar',height : 350, width : 500 },
+        chart: { type: 'bar',height : 350, width : 600 },
         series: [{
             name: 'Total Carton',
             data: data.stok
